@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Header } from "../../components/Header"
 import { Input } from "../../components/input"
 
@@ -13,6 +13,14 @@ import {
     doc,
     deleteDoc,
 } from "firebase/firestore"
+
+interface LinkProps{
+    id: string;
+    name: string;
+    url: string;
+    bg: string;
+    color: string;
+}
  
 export function Admin() {
     const [nameInput, setNameInput] = useState("")
@@ -20,7 +28,34 @@ export function Admin() {
     const [textColorInput, setTextColorInput] = useState("#f1f1f1")
     const [backgroundColorInput, setBackgroundColorInput] = useState("#121212")
 
+    const [links, setLinks] = useState<LinkProps[]>([])
     
+    useEffect(() =>{
+      const linksRef = collection(db, "links");
+      const queryRef = query(linksRef, orderBy("created", "asc"))
+
+      const unsub = onSnapshot(queryRef, (snapshot) => {
+        let lista = [] as LinkProps[];
+         
+        snapshot.forEach((doc) => {
+          lista.push({
+            id: doc.id,
+            name: doc.data().name,
+            url: doc.data().url,
+            bg: doc.data().bg,
+            color: doc.data().color
+          })
+        })
+
+        console.log(lista)
+      })
+
+      return () => {
+       unsub();
+      }
+
+    }, [])
+
      function handleRegister(e: React.SyntheticEvent<HTMLFormElement>){
        e.preventDefault();
         if(nameInput === "" || urlInput === ""){
