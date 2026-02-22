@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Header } from "../../components/Header";
 import { Input } from "../../components/input";
 
@@ -14,6 +14,22 @@ export function Networks() {
     const [facebook, setFacebook] = useState("")
     const [instagram, setInstagram] = useState("")
     const [youtube, setYoutube] = useState("")
+
+    useEffect(() =>{
+      function loadLinks(){
+        const docRef = doc(db, "social", "link")
+        getDoc(docRef)
+        .then((snapshot) => { 
+          if(snapshot.data() !== undefined){
+            setFacebook(snapshot.data()?.facebook)
+            setInstagram(snapshot.data()?.instagram)
+            setYoutube(snapshot.data()?.youtube)
+          }
+        })
+      }
+
+      loadLinks();
+    }, [])
 
     function handleRegister(e: React.SyntheticEvent<HTMLFormElement>){
       e.preventDefault()
