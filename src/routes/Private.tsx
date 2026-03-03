@@ -1,6 +1,6 @@
 import { type ReactNode, useState, useEffect } from "react";
 import { auth } from "../services/firebasConnection"
-import { onAuthStateChanged, reauthenticateWithRedirect } from "firebase/auth"
+import { onAuthStateChanged } from "firebase/auth"
 import { Navigate } from "react-router-dom"
 
 interface PrivateProps{
